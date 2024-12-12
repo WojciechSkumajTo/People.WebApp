@@ -29,7 +29,7 @@ jobs:
       - name: Build and push Docker image
         uses: docker/build-push-action@v4
         with:
-          context: ./People.WebApp
+          context: .
           push: true
           tags: ${{ env.DOCKER_REPO }}:${{ env.IMAGE_TAG }}
 
