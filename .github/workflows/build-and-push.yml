@@ -37,4 +37,5 @@ jobs:
         run: docker logout
 
       - name: Cleanup Docker images
-        run: docker image rm ${{ env.DOCKER_REPO }}:${{ env.IMAGE_TAG }}
+        run: docker image rm ${{ env.DOCKER_REPO }}:${{ env.IMAGE_TAG }} || echo "Image not found, skipping removal"
+
