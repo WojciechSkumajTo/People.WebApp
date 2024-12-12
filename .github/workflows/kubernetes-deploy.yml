@@ -1,0 +1,37 @@
+name: Deploy to Kubernetes
+
+on:
+  workflow_run:
+    workflows: ["CI Pipeline"]
+    types:
+      - completed
+
+jobs:
+  deploy:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+
+    env:
+      DOCKER_REPO: wojciechskumajto/people-service
+      IMAGE_TAG: ${{ github.event.workflow_run.id }}  # Użycie ID workflow_run jako tagu obrazu
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up kubectl
+        uses: azure/setup-kubectl@v3
+        with:
+          version: 'latest'
+
+      - name: Configure Kubernetes credentials
+        uses: google-github-actions/get-gke-credentials@v1
+        with:
+          cluster_name: ${{ secrets.K8S_CLUSTER_NAME }}
+          location: ${{ secrets.K8S_CLUSTER_LOCATION }}
+          project_id: ${{ secrets.GCP_PROJECT_ID }}
+
+      - name: Deploy to Kubernetes
+        run: |
+          kubectl set image deployment/people-service people-service=${{ env.DOCKER_REPO }}:${{ env.IMAGE_TAG }}
+          kubectl rollout status deployment/people-service
