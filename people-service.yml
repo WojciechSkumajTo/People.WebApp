@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: people-webapp-service
+  labels:
+    app: people-webapp
+spec:
+  selector:
+    app: people-webapp
+  type: NodePort
+  ports:
+  - port: 5000      # Port usługi dostępny w klastrze
+    nodePort: 30000  # Port, na którym nasłuchuje aplikacja w kontenerze
+

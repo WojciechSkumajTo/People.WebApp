@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: people-webapp-deployment
+  labels:
+    app: people-webapp
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: people-webapp
+  template:
+    metadata:
+      labels:
+        app: people-webapp
+    spec:
+      containers:
+      - name: people-webapp
+        image: wojciechskumajto/people-service:v1
+        ports:
+        - containerPort: 5000
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "500m"
+          limits:
+            memory: "512Mi"
+            cpu: "1"
+        env:
+        - name: ASPNETCORE_URLS
+          value: "http://+:5000"
